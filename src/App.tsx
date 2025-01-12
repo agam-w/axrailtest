@@ -22,9 +22,15 @@ function App() {
 
   function onItemMove(item: string, target: string) {
     if (target === BoxNames.Available) {
+      const exists = availableItems.includes(item);
+      if (exists) return;
+
       setSelectedItems((items) => items.filter((i) => i !== item));
       setAvailableItems((items) => [...items, item]);
     } else {
+      const exists = selectedItems.includes(item);
+      if (exists) return;
+
       setAvailableItems((items) => items.filter((i) => i !== item));
       setSelectedItems((items) => [...items, item]);
     }
