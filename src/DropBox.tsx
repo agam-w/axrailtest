@@ -28,6 +28,7 @@ export const DropBox = memo(function DropBox({
       ref={drop}
       className={twMerge(
         "flex-1 flex flex-col rounded p-2 bg-blue-500",
+        isActive ? "opacity-75" : "",
         className,
       )}
       data-testid="box"
