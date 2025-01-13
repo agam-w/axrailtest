@@ -32,23 +32,26 @@ export default memo(function Item({
   const ref = useRef<HTMLDivElement>(null);
 
   // drag hook, start grab the Item
-  const [{ isDragging }, drag] = useDrag(() => ({
-    type: ItemTypes.Item,
-    item: () => ({ name, index, boxName }),
-    end: (item, monitor) => {
-      const dropResult = monitor.getDropResult<DropResult>();
-      if (item && dropResult?.name) {
-        // console.log("end", item, dropResult, boxName);
-        if (onMove) {
-          onMove(item.name, dropResult.name);
+  const [{ isDragging }, drag] = useDrag(
+    () => ({
+      type: ItemTypes.Item,
+      item: { name, index, boxName },
+      end: (item, monitor) => {
+        const dropResult = monitor.getDropResult<DropResult>();
+        if (item && dropResult?.name) {
+          // console.log("end", item, dropResult, boxName);
+          if (onMove) {
+            onMove(item.name, dropResult.name);
+          }
         }
-      }
-    },
-    collect: (monitor) => ({
-      isDragging: monitor.isDragging(),
-      handlerId: monitor.getHandlerId(),
+      },
+      collect: (monitor) => ({
+        isDragging: monitor.isDragging(),
+        handlerId: monitor.getHandlerId(),
+      }),
     }),
-  }));
+    [name, index, boxName],
+  );
 
   // drop hook, drop on the Item
   const [{ handlerId }, drop] = useDrop<
@@ -106,7 +109,7 @@ export default memo(function Item({
       }
 
       // Time to actually perform the action
-      console.log("move", dragIndex, hoverIndex);
+      // console.log("move", dragIndex, hoverIndex);
       onSort?.(dragIndex, hoverIndex, boxName);
 
       // Note: we're mutating the monitor item here!
