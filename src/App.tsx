@@ -2,28 +2,42 @@ import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { DropBox, DropBoxContent, DropBoxTitle } from "./DropBox";
 import Item from "./Item";
-import { memo, useCallback, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import update from "immutability-helper";
+import { twMerge } from "tailwind-merge";
 
 enum BoxNames {
   Available = "Available Options",
   Selected = "Selected Options",
 }
 
+const colors = [
+  "bg-blue-500",
+  "bg-green-500",
+  "bg-orange-500",
+  "bg-yellow-500",
+  "bg-red-500",
+  "bg-purple-500",
+  "bg-pink-500",
+];
+
 function App() {
   const [availableItems, setAvailableItems] = useState([
-    "Item 1",
-    "Item 2",
-    "Item 3",
-    "Item 4",
-    "Item 5",
+    "Sales Cloud",
+    "Service Cloud",
+    "Community Cloud",
+    "Financial Cloud",
+    "Einstein AI",
+    "Wave Analytics",
+    "Health Cloud",
   ]);
 
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
 
-  // useEffect(() => {
-  //   console.log("availableItems", availableItems);
-  // }, [availableItems]);
+  const randomColors = useMemo(() => {
+    // random sort
+    return [...colors].sort(() => Math.random() - 0.5);
+  }, []);
 
   function onItemMove(item: string, target: string) {
     if (target === BoxNames.Available) {
@@ -65,6 +79,20 @@ function App() {
   return (
     <DndProvider backend={HTML5Backend}>
       <div className="container mx-auto p-4">
+        <div className="flex flex-wrap gap-2 mb-4">
+          {selectedItems.map((name, i) => (
+            <div
+              key={i}
+              className={twMerge(
+                "flex rounded py-1 px-2 text-sm text-white",
+                randomColors[i % colors.length],
+              )}
+            >
+              {name}
+            </div>
+          ))}
+        </div>
+
         <div className="flex gap-4">
           <DropBox
             name={BoxNames.Available}
