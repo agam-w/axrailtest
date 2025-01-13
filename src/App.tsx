@@ -2,7 +2,8 @@ import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { DropBox, DropBoxContent, DropBoxTitle } from "./DropBox";
 import Item from "./Item";
-import { useState } from "react";
+import { memo, useCallback, useState } from "react";
+import update from "immutability-helper";
 
 enum BoxNames {
   Available = "Available Options",
@@ -20,6 +21,10 @@ function App() {
 
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
 
+  // useEffect(() => {
+  //   console.log("availableItems", availableItems);
+  // }, [availableItems]);
+
   function onItemMove(item: string, target: string) {
     if (target === BoxNames.Available) {
       const exists = availableItems.includes(item);
@@ -36,6 +41,27 @@ function App() {
     }
   }
 
+  const onItemSort = useCallback(
+    (dragIndex: number, hoverIndex: number, boxName: string) => {
+      // console.log("onItemSort", boxName, ":", dragIndex, "->", hoverIndex);
+
+      const sortItem = (prevItems: string[]) =>
+        update(prevItems, {
+          $splice: [
+            [dragIndex, 1],
+            [hoverIndex, 0, prevItems[dragIndex]],
+          ],
+        });
+
+      if (boxName === BoxNames.Available) {
+        setAvailableItems(sortItem);
+      } else {
+        setSelectedItems(sortItem);
+      }
+    },
+    [],
+  );
+
   return (
     <DndProvider backend={HTML5Backend}>
       <div className="container mx-auto p-4">
@@ -46,8 +72,15 @@ function App() {
           >
             <DropBoxTitle>{BoxNames.Available}</DropBoxTitle>
             <DropBoxContent>
-              {availableItems.map((item) => (
-                <Item key={item} name={item} onMove={onItemMove} />
+              {availableItems.map((item, i) => (
+                <Item
+                  key={item}
+                  index={i}
+                  name={item}
+                  boxName={BoxNames.Available}
+                  onMove={onItemMove}
+                  onSort={onItemSort}
+                />
               ))}
             </DropBoxContent>
           </DropBox>
@@ -57,8 +90,15 @@ function App() {
           >
             <DropBoxTitle>{BoxNames.Selected}</DropBoxTitle>
             <DropBoxContent>
-              {selectedItems.map((item) => (
-                <Item key={item} name={item} onMove={onItemMove} />
+              {selectedItems.map((item, i) => (
+                <Item
+                  key={item}
+                  index={i}
+                  name={item}
+                  boxName={BoxNames.Selected}
+                  onMove={onItemMove}
+                  onSort={onItemSort}
+                />
               ))}
             </DropBoxContent>
           </DropBox>
@@ -68,4 +108,4 @@ function App() {
   );
 }
 
-export default App;
+export default memo(App);

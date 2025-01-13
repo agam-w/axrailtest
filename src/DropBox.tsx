@@ -1,8 +1,9 @@
 import { useDrop } from "react-dnd";
 import { twMerge } from "tailwind-merge";
 import { ItemTypes } from "./ItemTypes";
+import { memo } from "react";
 
-export function DropBox({
+export const DropBox = memo(function DropBox({
   children,
   className,
   name,
@@ -27,14 +28,14 @@ export function DropBox({
       ref={drop}
       className={twMerge(
         "flex-1 flex flex-col rounded p-2 bg-blue-500",
-        isActive ? "bg-blue-700" : "",
         className,
       )}
+      data-testid="box"
     >
       {children}
     </div>
   );
-}
+});
 
 export function DropBoxTitle({
   children,
