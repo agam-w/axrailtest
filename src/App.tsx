@@ -1,7 +1,7 @@
-import { DndProvider } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
-import { DropBox, DropBoxContent, DropBoxTitle } from "./DropBox";
-import Item from "./Item";
+import { DndProvider } from "react-dnd-multi-backend";
+import { HTML5toTouch } from "rdndmb-html5-to-touch";
+import { DropBox, DropBoxContent, DropBoxTitle } from "@/components/DropBox";
+import Item from "./components/Item";
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import update from "immutability-helper";
 import { twMerge } from "tailwind-merge";
@@ -73,11 +73,11 @@ function App() {
         setSelectedItems(sortItem);
       }
     },
-    [],
+    []
   );
 
   return (
-    <DndProvider backend={HTML5Backend}>
+    <DndProvider options={HTML5toTouch}>
       <div className="container mx-auto p-4">
         <div className="flex flex-wrap gap-2 mb-4">
           {selectedItems.map((name, i) => (
@@ -85,7 +85,7 @@ function App() {
               key={i}
               className={twMerge(
                 "flex rounded py-1 px-2 text-sm text-white",
-                randomColors[i % colors.length],
+                randomColors[i % colors.length]
               )}
             >
               {name}

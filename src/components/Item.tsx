@@ -1,5 +1,5 @@
 import { useDrag, useDrop } from "react-dnd";
-import { ItemTypes } from "./ItemTypes";
+import { ItemTypes } from "@/types/ItemTypes";
 import { twMerge } from "tailwind-merge";
 import { memo, useRef } from "react";
 import { Identifier, XYCoord } from "dnd-core";
@@ -50,7 +50,7 @@ export default memo(function Item({
         handlerId: monitor.getHandlerId(),
       }),
     }),
-    [name, index, boxName],
+    [name, index, boxName]
   );
 
   // drop hook, drop on the Item
@@ -126,9 +126,9 @@ export default memo(function Item({
     <div
       ref={ref}
       className={twMerge(
-        "p-2 bg-white border rounded",
-        isDragging ? "opacity-30" : "",
-        className,
+        "p-2 bg-white border rounded touch-none cursor-grab active:cursor-grabbing",
+        isDragging ? "opacity-30 !cursor-grabbing" : "",
+        className
       )}
       data-testid="item"
       data-handler-id={handlerId}
